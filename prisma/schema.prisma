@@ -23,7 +23,7 @@ model Customer {
 
   firstName String @default("not specified")
   lastName String @default("not specified")
-  phoneNumber Int
+  phoneNumber String?
   role EnumUserRoles @default(CUSTOMER)
   @@map("customer")
 }
