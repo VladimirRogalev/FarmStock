@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Customer {
-  id        String   @id @default(cuid(1))
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -25,6 +25,13 @@ model Customer {
   lastName String @default("not specified")
   phoneNumber String?
   role EnumUserRoles @default(CUSTOMER)
+
+  farm Farm?
+
+  reservedOrders   Order[] @relation("ReservedOrders")
+  completedOrders  Order[] @relation("CompletedOrders")
+  notPickedOrders  Order[] @relation("NotPickedOrders")
+
   @@map("customer")
 }
 
@@ -33,4 +40,58 @@ enum EnumUserRoles{
   FARMER
   GUEST
   ADMIN
+}
+
+model Farm {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  title            String
+  description      String?
+  address          String
+  coordinates      Decimal[]
+  rating           Decimal @default(0.0)
+  howManyRatings   Int @default(0)      @map("how_many_ratings")
+  successfulOrders Int @default(0)      @map("successful_orders")
+  tags             String[]  @default([]) //TODO: to be replaced with Tag class?
+  orderActive Boolean @default(false) @map("order_active")
+
+  ownerId String @unique
+  owner Customer @relation(fields: [ownerId], references: [id])
+
+  order Order? @relation("FarmToOrder")
+
+  @@map("farm")
+}
+
+model Order {
+
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  availabilityStart DateTime @map("availability_start")
+  availabilityEnd DateTime @map("availability_end")
+  quantity Int
+  price Decimal
+  discountPercentage Decimal
+  status EnumOrderStatus @default(AVAILABLE)
+
+  farmId String @unique
+  farm Farm       @relation("FarmToOrder", fields: [farmId], references: [id])
+
+  reservedByCustomers Customer[] @relation("ReservedOrders")
+  completedByCustomers Customer[] @relation("CompletedOrders")
+  notPickedByCumstomers Customer[] @relation("NotPickedOrders")
+
+  @@map("order")
+
+}
+
+enum EnumOrderStatus{
+  AVAILABLE
+  RESERVED
+  FULFILLED
+  EXPIRED
 }
