@@ -1,107 +1,114 @@
-import {BadRequestException, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
-import {JwtService} from '@nestjs/jwt';
-import {CustomerService} from '../customer/customer.service';
-import {PrismaService} from '../prisma.service';
-import {AuthDto} from './dto/auth.dto';
-import {Response} from 'express';
-import {ConfigService} from '@nestjs/config';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from '../user/user.service';
+import { PrismaService } from '../prisma.service';
+import { RegisterDto } from './dto/register.dto';
+import { Response } from 'express';
+import { ConfigService } from '@nestjs/config';
+import { verify } from 'argon2';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-    EXPIRE_DAY_REFRESH_TOKEN = 1;
-    REFRESH_TOKEN_NAME = 'refreshToken';
+	EXPIRE_DAY_REFRESH_TOKEN = 1;
+	REFRESH_TOKEN_NAME = 'refreshToken';
 
-    constructor(private jwt: JwtService,
-                private customerService: CustomerService,
-                private prisma: PrismaService,
-                private configService: ConfigService) {
-    }
+	constructor(private jwt: JwtService,
+				private userService: UserService,
+				private prisma: PrismaService,
+				private configService: ConfigService) {
+	}
 
-    async login(dto: AuthDto) {
-        const customer = await this.validateCustomer(dto);
-        const tokens = this.issueTokens(customer.id);
-        return {customer, ...tokens};
-    }
+	async login(dto: LoginDto) {
+		const user = await this.validateUser(dto);
+		const tokens = this.issueTokens(user.id);
+		return { user: user, ...tokens };
+	}
 
-    async register(dto: AuthDto) {
-        const oldCustomer = await this.customerService.getByEmail(dto.email);
+	async register(dto: RegisterDto) {
+		const oldUser = await this.userService.getByEmail(dto.email);
 
-        if (oldCustomer) {
-            throw new BadRequestException('Customer is already exist');
-        }
-        const customer = await this.customerService.create(dto);
-        const tokens = this.issueTokens(customer.id);
-        return {customer, ...tokens};
-    }
+		if (oldUser) {
+			throw new BadRequestException('User is already exist');
+		}
+		const user = await this.userService.create(dto);
+		const tokens = this.issueTokens(user.id);
+		return { user: user, ...tokens };
+	}
 
-    async getNewTokens(refreshToken: string) {
-        const result = await this.jwt.verifyAsync(refreshToken);
-        if (!result) {
-            throw new UnauthorizedException('Refresh token in not a valid');
-        }
-        const customer = await this.customerService.getById(result.id);
-        if (!customer) {
-            throw new UnauthorizedException('Customer not found');
-        }
-        const tokens = this.issueTokens(customer.id);
-        return {customer, ...tokens};
+	async getNewTokens(refreshToken: string) {
+		const result = await this.jwt.verifyAsync(refreshToken);
+		if (!result) {
+			throw new UnauthorizedException('Refresh token in not a valid');
+		}
+		const user = await this.userService.getById(result.id);
+		if (!user) {
+			throw new UnauthorizedException('User not found');
+		}
+		const tokens = this.issueTokens(user.id);
+		return { user, ...tokens };
 
-    }
+	}
 
-    issueTokens(customerId: string) {
-        const data = {id: customerId};
-        const accessToken = this.jwt.sign(data, {
-            expiresIn: '1h'
-        });
-        const refreshToken = this.jwt.sign(data, {
-            expiresIn: '7d'
-        });
-        return {accessToken, refreshToken};
-    }
+	issueTokens(userId: string) {
+		const data = { id: userId };
+		const accessToken = this.jwt.sign(data, {
+			expiresIn: '1h'
+		});
+		const refreshToken = this.jwt.sign(data, {
+			expiresIn: '7d'
+		});
+		return { accessToken, refreshToken };
+	}
 
-    private async validateCustomer(dto: AuthDto) {
-        const customer = await this.customerService.getByEmail(dto.email);
-        if (!customer) {
-            throw new NotFoundException('Customer not found');
-        }
-        return customer;
-    }
+	private async validateUser(dto: LoginDto) {
+		const user = await this.userService.getByEmail(dto.email);
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		const isPasswordCorrect = await verify(user.password!, dto.password);
+		if (!isPasswordCorrect) {
+			throw new UnauthorizedException('Password is wrong');
+		}
+		return user;
+	}
 
-    async validateOAuthLogin(req: any) {
-        let customer = await this.customerService.getByEmail(req.customer.email);
+	async validateOAuthLogin(req: any) {
+		let user = await this.userService.getByEmail(req.user.email);
 
-        if (!customer) {
-            customer = await this.prisma.customer.create({
-                data: {
-                    email: req.customer.email,
-                    firstName: req.customer.givenName,
-                    lastName: req.customer.familyName
-                }
-            });
-        }
-        const tokens = this.issueTokens(customer.id);
-        return {customer, ...tokens};
-    }
+		if (!user) {
+			user = await this.prisma.user.create({
+				data: {
+					email: req.user.email,
+					firstName: req.user.firstName,
+					lastName: req.user.lastName,
+					oauthProvider:'google'
+				}
+			});
+		}
+		const tokens = this.issueTokens(user.id);
+		return { user: user, ...tokens };
+	}
 
-    addRefreshTokenToResponse(res: Response, refreshToken: string) {
-        const expiresIn = new Date();
-        expiresIn.setDate(expiresIn.getDate() + this.EXPIRE_DAY_REFRESH_TOKEN);
-        res.cookie(this.REFRESH_TOKEN_NAME, refreshToken, {
-            httpOnly: true,
-            domain: this.configService.get('SERVER_DOMAIN'),
-            expires: expiresIn,
-            secure: true,
-            sameSite: 'none'
-        });
-    }
+	addRefreshTokenToResponse(res: Response, refreshToken: string) {
+		const expiresIn = new Date();
+		expiresIn.setDate(expiresIn.getDate() + this.EXPIRE_DAY_REFRESH_TOKEN);
+		res.cookie(this.REFRESH_TOKEN_NAME, refreshToken, {
+			httpOnly: true,
+			domain: this.configService.get('SERVER_DOMAIN'),
+			expires: expiresIn,
+			secure: true,
+			sameSite: 'none'
+		});
+	}
 
-    removeRefreshTokenFromResponse(res: Response) {
-        res.cookie(this.REFRESH_TOKEN_NAME, '', {
-            httpOnly: true,
-            domain: this.configService.get('SERVER_DOMAIN'),
-            expires: new Date(0),
-            secure: true,
-            sameSite: 'none'
-        });
-    }
+	removeRefreshTokenFromResponse(res: Response) {
+		res.cookie(this.REFRESH_TOKEN_NAME, '', {
+			httpOnly: true,
+			domain: this.configService.get('SERVER_DOMAIN'),
+			expires: new Date(0),
+			secure: true,
+			sameSite: 'none'
+		});
+	}
 }

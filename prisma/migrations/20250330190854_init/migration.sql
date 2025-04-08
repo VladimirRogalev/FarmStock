@@ -2,7 +2,7 @@
 CREATE TYPE "EnumUserRoles" AS ENUM ('CUSTOMER', 'FARMER', 'GUEST', 'ADMIN');
 
 -- CreateTable
-CREATE TABLE "customer" (
+CREATE TABLE "user" (
     "id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -17,4 +17,4 @@ CREATE TABLE "customer" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "customer_email_key" ON "customer"("email");
+CREATE UNIQUE INDEX "customer_email_key" ON "user"("email");

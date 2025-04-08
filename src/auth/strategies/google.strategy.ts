@@ -18,12 +18,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         const {emails, name} = profile;
 
         if (emails) {
-            const customer = {
+            const user = {
                 email: emails[0].value,
-                firstName: name?.givenName,
-                lastName: name?.familyName
+                firstName: name?.givenName || '',
+                lastName: name?.familyName || ''
             };
-            done(null, customer)
+            done(null, user);
         }
 
     }
