@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Customer {
+model User {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -21,21 +21,23 @@ model Customer {
   email    String  @unique
   password String?
 
-  firstName String @default("not specified")
-  lastName String @default("not specified")
+  firstName   String        @default("not specified")
+  lastName    String        @default("not specified")
   phoneNumber String?
-  role EnumUserRoles @default(CUSTOMER)
+  oauthProvider String?
+
+  role        EnumUserRoles @default(CUSTOMER)
 
   farm Farm?
 
-  reservedOrders   Order[] @relation("ReservedOrders")
-  completedOrders  Order[] @relation("CompletedOrders")
-  notPickedOrders  Order[] @relation("NotPickedOrders")
+  reservedOrders  Order[] @relation("ReservedOrders")
+  completedOrders Order[] @relation("CompletedOrders")
+  notPickedOrders Order[] @relation("NotPickedOrders")
 
-  @@map("customer")
+  @@map("user")
 }
 
-enum EnumUserRoles{
+enum EnumUserRoles {
   CUSTOMER
   FARMER
   GUEST
@@ -51,14 +53,14 @@ model Farm {
   description      String?
   address          String
   coordinates      Decimal[]
-  rating           Decimal @default(0.0)
-  howManyRatings   Int @default(0)      @map("how_many_ratings")
-  successfulOrders Int @default(0)      @map("successful_orders")
+  rating           Decimal   @default(0.0)
+  howManyRatings   Int       @default(0) @map("how_many_ratings")
+  successfulOrders Int       @default(0) @map("successful_orders")
   tags             String[]  @default([]) //TODO: to be replaced with Tag class?
-  orderActive Boolean @default(false) @map("order_active")
+  orderActive      Boolean   @default(false) @map("order_active")
 
   ownerId String @unique
-  owner Customer @relation(fields: [ownerId], references: [id])
+  owner   User   @relation(fields: [ownerId], references: [id])
 
   order Order? @relation("FarmToOrder")
 
@@ -66,30 +68,28 @@ model Farm {
 }
 
 model Order {
-
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  availabilityStart DateTime @map("availability_start")
-  availabilityEnd DateTime @map("availability_end")
-  quantity Int
-  price Decimal
+  availabilityStart  DateTime        @map("availability_start")
+  availabilityEnd    DateTime        @map("availability_end")
+  quantity           Int
+  price              Decimal
   discountPercentage Decimal
-  status EnumOrderStatus @default(AVAILABLE)
+  status             EnumOrderStatus @default(AVAILABLE)
 
   farmId String @unique
-  farm Farm       @relation("FarmToOrder", fields: [farmId], references: [id])
+  farm   Farm   @relation("FarmToOrder", fields: [farmId], references: [id])
 
-  reservedByCustomers Customer[] @relation("ReservedOrders")
-  completedByCustomers Customer[] @relation("CompletedOrders")
-  notPickedByCumstomers Customer[] @relation("NotPickedOrders")
+  reservedByCustomers   User[] @relation("ReservedOrders")
+  completedByCustomers  User[] @relation("CompletedOrders")
+  notPickedByCumstomers User[] @relation("NotPickedOrders")
 
   @@map("order")
-
 }
 
-enum EnumOrderStatus{
+enum EnumOrderStatus {
   AVAILABLE
   RESERVED
   FULFILLED

@@ -1,25 +1,25 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from '../prisma.service';
 import {hash} from 'argon2';
-import {AuthDto} from '../auth/dto/auth.dto';
+import {RegisterDto} from '../auth/dto/register.dto';
 
 @Injectable()
-export class CustomerService {
+export class UserService {
     constructor(private readonly prisma: PrismaService) {
     }
 
     async getById(id: string) {
-        const customer = await this.prisma.customer.findUnique({where: {id}});
-        return customer;
+        const user = await this.prisma.user.findUnique({where: {id}});
+        return user;
     }
 
     async getByEmail(email: string) {
-        const customer = await this.prisma.customer.findUnique({where: {email}});
-        return customer;
+        const user = await this.prisma.user.findUnique({where: {email}});
+        return user;
     }
 
-    async create(dto: AuthDto) {
-        return this.prisma.customer.create({
+    async create(dto: RegisterDto) {
+        return this.prisma.user.create({
             data: {
                 firstName: dto.firstName,
                 lastName: dto.lastName,
