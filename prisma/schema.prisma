@@ -21,18 +21,19 @@ model User {
   email    String  @unique
   password String?
 
-  firstName   String        @default("not specified")
-  lastName    String        @default("not specified")
-  phoneNumber String?
+  firstName     String  @default("not specified")
+  lastName      String  @default("not specified")
+  phoneNumber   String?
   oauthProvider String?
 
-  role        EnumUserRoles @default(CUSTOMER)
+  role EnumUserRoles @default(CUSTOMER)
 
   farm Farm?
 
-  reservedOrders  Order[] @relation("ReservedOrders")
-  completedOrders Order[] @relation("CompletedOrders")
-  notPickedOrders Order[] @relation("NotPickedOrders")
+  reservedOrders  Order[]     @relation("ReservedOrders")
+  completedOrders Order[]     @relation("CompletedOrders")
+  notPickedOrders Order[]     @relation("NotPickedOrders")
+  OrderItem       OrderItem[]
 
   @@map("user")
 }
@@ -62,10 +63,10 @@ model Farm {
   ownerId String @unique
   owner   User   @relation(fields: [ownerId], references: [id])
 
-  order Order? @relation("FarmToOrder")
+  order       Order?        @relation("FarmToOrder")
+  SurpriseBag SurpriseBag[]
 
   @@map("farm")
-  SurpriseBag SurpriseBag[]
 }
 
 model Order {
@@ -98,9 +99,9 @@ enum EnumOrderStatus {
 }
 
 model SurpriseBag {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   title       String
   description String?
@@ -108,22 +109,47 @@ model SurpriseBag {
   price       Decimal
   quantity    Int
   expiresAt   DateTime
+  images      String[]                @default([])
 
   address     String
   coordinates Decimal[]
 
-  farmId      String
-  farm        Farm      @relation(fields: [farmId], references: [id])
+  farmId String
+  farm   Farm   @relation(fields: [farmId], references: [id])
 
-  isActive    Boolean   @default(true)
+  isActive  Boolean     @default(true)
+  OrderItem OrderItem[]
 
   @@map("surprise_bag")
 }
 
 enum EnumSurpriseBagCategory {
-VEGETABLES
-FRUITS
-DAIRY
-BAKERY
-MIXED
+  VEGETABLES
+  FRUITS
+  DAIRY
+  BAKERY
+  MIXED
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  surpriseBag   SurpriseBag @relation(fields: [surpriseBagId], references: [id])
+  surpriseBagId String
+
+  quantity Int               @default(1)
+  status   ReservationStatus @default(PENDING)
+
+  @@map("order_item")
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  PICKED_UP
+  CANCELLED
 }
