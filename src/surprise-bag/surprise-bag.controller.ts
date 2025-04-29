@@ -27,13 +27,13 @@ export class SurpriseBagController {
 	}
 
 	@Auth()
-	@Get('by-farmerId/:farmId')
+	@Get('by-farm/:farmId')
 	async getByFarmerId(@Param('farmId') farmId: string) {
 		return this.surpriseBagService.getByFarmerId(farmId);
 	}
 
 
-	@Get('by-id/:id')
+	@Get('/:id')
 	async getById(@Param('id') id: string) {
 		return this.surpriseBagService.getById(id);
 	}

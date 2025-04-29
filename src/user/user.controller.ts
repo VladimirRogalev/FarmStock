@@ -32,5 +32,12 @@ export class UserController {
 		return this.userService.delete(id);
 	}
 
+
+	@Auth()
+	@Put('become-farmer')
+	async becomeFarmer(@CurrentUser('id') userId: string) {
+		return this.userService.becomeFarmer(userId);
+	}
+
 }
 

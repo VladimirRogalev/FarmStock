@@ -1,4 +1,13 @@
-import { ArrayMinSize, IsDateString, IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import {
+	ArrayMinSize,
+	IsDateString,
+	IsEnum,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsPositive,
+	IsString
+} from 'class-validator';
 import { EnumSurpriseBagCategory } from '@prisma/client';
 
 export class SurpriseBagDto {

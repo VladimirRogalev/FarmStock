@@ -26,7 +26,7 @@ model User {
   phoneNumber   String?
   oauthProvider String?
 
-  role EnumUserRoles @default(CUSTOMER)
+  roles EnumUserRoles[]
 
   farm Farm?
 
@@ -59,6 +59,10 @@ model Farm {
   successfulOrders Int       @default(0) @map("successful_orders")
   tags             String[]  @default([]) //TODO: to be replaced with Tag class?
   orderActive      Boolean   @default(false) @map("order_active")
+  coverImage       String?
+  contactEmail     String?
+  contactPhone     String?
+  website          String?
 
   ownerId String @unique
   owner   User   @relation(fields: [ownerId], references: [id])
@@ -108,7 +112,7 @@ model SurpriseBag {
   category    EnumSurpriseBagCategory
   price       Decimal
   quantity    Int
-  expiresAt   DateTime
+  expiresAt   DateTime?
   images      String[]                @default([])
 
   address     String
