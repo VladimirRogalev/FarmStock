@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { OrderModule } from './order/order.module';
 import { FarmModule } from './farm/farm.module';
 import { SurpriseBagModule } from './surprise-bag/surprise-bag.module';
+import { FileModule } from './file/file.module';
 
 
 @Module({
@@ -14,7 +15,8 @@ import { SurpriseBagModule } from './surprise-bag/surprise-bag.module';
         UserModule,
         OrderModule,
         FarmModule,
-        SurpriseBagModule
+        SurpriseBagModule,
+        FileModule
     ],
 
 })

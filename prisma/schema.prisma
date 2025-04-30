@@ -30,10 +30,9 @@ model User {
 
   farm Farm?
 
-  reservedOrders  Order[]     @relation("ReservedOrders")
-  completedOrders Order[]     @relation("CompletedOrders")
-  notPickedOrders Order[]     @relation("NotPickedOrders")
-  OrderItem       OrderItem[]
+  orders Order[]
+
+  OrderItem OrderItem[]
 
   @@map("user")
 }
@@ -67,7 +66,8 @@ model Farm {
   ownerId String @unique
   owner   User   @relation(fields: [ownerId], references: [id])
 
-  order       Order?        @relation("FarmToOrder")
+  orders      Order[]       @relation("FarmToOrder")
+  orderItems  OrderItem[]
   SurpriseBag SurpriseBag[]
 
   @@map("farm")
@@ -78,28 +78,24 @@ model Order {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  availabilityStart  DateTime        @map("availability_start")
-  availabilityEnd    DateTime        @map("availability_end")
-  quantity           Int
-  price              Decimal
-  discountPercentage Decimal
-  status             EnumOrderStatus @default(AVAILABLE)
+  status EnumOrderStatus @default(PENDING)
+  total  Decimal
 
-  farmId String @unique
-  farm   Farm   @relation("FarmToOrder", fields: [farmId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-  reservedByCustomers   User[] @relation("ReservedOrders")
-  completedByCustomers  User[] @relation("CompletedOrders")
-  notPickedByCumstomers User[] @relation("NotPickedOrders")
+  farmId String?
+  farm   Farm ?  @relation("FarmToOrder", fields: [farmId], references: [id])
+
+  items OrderItem[]
 
   @@map("order")
 }
 
 enum EnumOrderStatus {
-  AVAILABLE
-  RESERVED
-  FULFILLED
-  EXPIRED
+  PENDING
+  PAID
+  CANCELLED
 }
 
 model SurpriseBag {
@@ -139,14 +135,24 @@ model OrderItem {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
 
+  order   Order  @relation(fields: [orderId], references: [id])
+  orderId String
+
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
   surpriseBag   SurpriseBag @relation(fields: [surpriseBagId], references: [id])
   surpriseBagId String
 
-  quantity Int               @default(1)
-  status   ReservationStatus @default(PENDING)
+  farm   Farm   @relation(fields: [farmId], references: [id])
+  farmId String
+
+  quantity           Int               @default(1)
+  price              Decimal
+  availabilityStart  DateTime
+  availabilityEnd    DateTime
+  discountPercentage Decimal
+  status             ReservationStatus @default(PENDING)
 
   @@map("order_item")
 }

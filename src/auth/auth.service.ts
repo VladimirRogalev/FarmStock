@@ -82,7 +82,8 @@ export class AuthService {
 					email: req.user.email,
 					firstName: req.user.firstName,
 					lastName: req.user.lastName,
-					oauthProvider:'google'
+					oauthProvider:'google',
+					roles: ['CUSTOMER'],
 				}
 			});
 		}
