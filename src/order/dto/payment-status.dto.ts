@@ -6,13 +6,14 @@ class AmountPayment {
 class ObjectPayment {
 	id: string;
 	status: string;
+	invoice_id: string;
 	amount: AmountPayment;
 	payment_method: {
-		type: string
-		id: string
-		saved: boolean
-		title: string
-		card: object
+		type: string;
+		id: string;
+		saved: boolean;
+		title: string;
+		card: object;
 	};
 	created_at: string;
 	expires_at: string;
@@ -21,10 +22,13 @@ class ObjectPayment {
 
 export class PaymentStatusDto {
 	event:
-		| 'payment.succeeded'
-		| 'payment.waiting_for_capture'
-		| 'payment.canceled'
-		| 'refund.succeeded';
+		| 'PAYMENT.CAPTURE.COMPLETED'
+		| 'PAYMENT.AUTHORIZATION.CREATED'
+		| 'PAYMENT.AUTHORIZATION.VOIDED'
+		| 'PAYMENT.CAPTURE.DECLINED'
+		| 'PAYMENT.CAPTURE.PENDING'
+		| 'PAYMENT.CAPTURE.REFUNDED'
+		| 'PAYMENT.CAPTURE.REVERSED'
 	type: string;
 	object: ObjectPayment;
 }
