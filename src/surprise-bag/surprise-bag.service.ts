@@ -40,11 +40,15 @@ export class SurpriseBagService {
 	}
 
 	async getByFarmerId(farmId: string) {
-		return this.prisma.surpriseBag.findMany({
+		const surpriseBag = await this.prisma.surpriseBag.findMany({
 			where: {
 				farmId
 			}
 		});
+		if (!surpriseBag) {
+			throw new NotFoundException('Surprise Bag not found');
+		}
+		return surpriseBag;
 	}
 
 	async getById(id: string) {

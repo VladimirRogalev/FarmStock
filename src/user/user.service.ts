@@ -10,7 +10,11 @@ export class UserService {
 	}
 
 	async getById(id: string) {
-		const user = await this.prisma.user.findUnique({ where: { id } });
+		const user = await this.prisma.user.findUnique({
+			where: { id },
+			include: {
+				farm: true
+			}});
 		return user;
 	}
 
@@ -26,7 +30,8 @@ export class UserService {
 				lastName: dto.lastName,
 				email: dto.email,
 				phoneNumber: dto.phoneNumber,
-				password: await hash(dto.password)
+				password: await hash(dto.password),
+				roles: ['CUSTOMER']
 
 			}
 		});
@@ -56,16 +61,31 @@ export class UserService {
 			updateData.password = await hash(dto.password);
 		}
 		return this.prisma.user.update({
-			where: { id },
-			data: updateData
+			where: { id }, data: updateData
 		});
 	}
 
 	async delete(id: string) {
 		const deletedUser = await this.prisma.user.delete({
-			where: { id },
+			where: { id }
 		});
 		return { message: 'User deleted', deletedUser };
+	}
+
+	async becomeFarmer(userId: string) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+		if (!user) throw new NotFoundException('User not found');
+		if (user.roles.includes('FARMER')) {
+			throw new BadRequestException('User is already a farmer');
+		}
+
+		return this.prisma.user.update({
+			where: { id: userId }, data: {
+				roles: {
+					push: 'FARMER'
+				}
+			}
+		});
 	}
 }
 
