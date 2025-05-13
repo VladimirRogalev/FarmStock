@@ -4,6 +4,7 @@ export default {
 		'./index.html',
 		'./src/**/*.{js,ts,jsx,tsx}'
 	],
+	safelist: ['font-geist'],
 	theme: {
 		container: {
 			padding: '2rem',

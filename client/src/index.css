@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme {
+    --default-font-family: 'Geist', sans-serif;
+}
+
 @layer base {
 
     body {
