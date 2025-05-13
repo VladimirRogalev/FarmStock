@@ -3,7 +3,7 @@ import { GiFarmer } from 'react-icons/gi';
 import { FaSignOutAlt } from 'react-icons/fa';
 
 const Header = () => {
-	const isAuth = true;
+	const isAuth = false;
 	return (
 		<header className="flex items-center  bg-green-500 p-4 shadow-sm backdrop-blur-sm">
 			<Link to="/">
@@ -39,7 +39,7 @@ const Header = () => {
 				) : (
 					<Link
 						className = "py-2 text-white/50 hover:text-white ml-auto"
-						to={'auth'}
+						to={'/auth/login'}
 					>Log in / Sign In</Link>
 				)
 			}
