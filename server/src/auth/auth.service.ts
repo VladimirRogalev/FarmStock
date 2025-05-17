@@ -29,7 +29,7 @@ export class AuthService {
 		const oldUser = await this.userService.getByEmail(dto.email);
 
 		if (oldUser) {
-			throw new BadRequestException('User is already exist');
+			throw new BadRequestException('This email is already in use');
 		}
 		const user = await this.userService.create(dto);
 		const tokens = this.issueTokens(user.id);
