@@ -17,6 +17,8 @@ export class RegisterDto {
 	@IsPhoneNumber()
 	phoneNumber: string;
 
+
+
 	@MinLength(6, {
 		message: 'The password must contain at least 6 characters'
 	})

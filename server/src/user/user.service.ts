@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma.service';
 import { hash, verify } from 'argon2';
 import { RegisterDto } from '../auth/dto/register.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { OAuthRegisterDto } from '../auth/dto/oauthregister.dto';
 
 @Injectable()
 export class UserService {
@@ -70,6 +71,18 @@ export class UserService {
 			where: { id }
 		});
 		return { message: 'User deleted', deletedUser };
+	}
+	async createWithOAuth(dto: OAuthRegisterDto) {
+		return this.prisma.user.create({
+			data: {
+				email: dto.email,
+				firstName: dto.firstName,
+				lastName: dto.lastName,
+				password: null,
+				oauthProvider: dto.oauthProvider,
+				roles: ['CUSTOMER']
+			},
+		})
 	}
 
 	async becomeFarmer(userId: string) {
