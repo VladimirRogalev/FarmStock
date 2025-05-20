@@ -7,6 +7,7 @@ import { LoginFormData, loginSchema } from '@/schemas/loginFormData.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAppDispatch } from '@/store/hooks.ts';
 import { login } from '@/store/user/userSlice.ts';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Login: FC = () => {
 	const navigate = useNavigate();
@@ -73,6 +74,53 @@ const Login: FC = () => {
 
 				<button type="submit" className="btn btn-green mx-auto">Submit</button>
 			</form>
+			<div className="flex flex-col items-center mt-8 gap-4">
+				<div className="relative w-full">
+					<div className="absolute inset-0 flex items-center justify-center">
+						<span className="bg-green-800 px-2 text-white/70 text-sm">or continue with</span>
+					</div>
+					<div className="border-t border-white/30" />
+				</div>
+
+				<div className="w-full flex justify-center">
+					<GoogleLogin
+						theme="filled_black"
+						size="large"
+						width="100%"
+						text="continue_with"
+						onSuccess={async (credentialResponse) => {
+							const token = credentialResponse.credential
+							if (!token) {
+								toast.error('Google login failed: no token')
+								return
+							}
+
+							try {
+								const res = await AuthService.googleLogin(token)
+
+								if (res?.accessToken) {
+									localStorage.setItem('token', res.accessToken)
+
+									dispatch(login({
+										id: res.user.id,
+										email: res.user.email,
+										token: res.accessToken
+									}))
+
+									toast.success(`Welcome, ${res.user.firstName } ${res.user.lastName }!`)
+									navigate('/')
+								}
+
+							} catch (err: any) {
+								toast.error('Google login failed')
+							}
+						}}
+						onError={() => {
+							toast.error('Google login was cancelled or failed')
+						}}
+					/>
+				</div>
+			</div>
 
 			<div className="mt-5">
 				<Link to="/auth/register" className="text-green-200 underline hover:text-white">

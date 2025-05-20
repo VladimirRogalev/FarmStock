@@ -7,11 +7,15 @@ import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { verify } from 'argon2';
 import { LoginDto } from './dto/login.dto';
+import { OAuth2Client } from 'google-auth-library';
+import * as process from 'node:process';
+import { OAuthRegisterDto } from './dto/oauthregister.dto';
 
 @Injectable()
 export class AuthService {
 	EXPIRE_DAY_REFRESH_TOKEN = 1;
 	REFRESH_TOKEN_NAME = 'refreshToken';
+	private oauthClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 	constructor(private jwt: JwtService,
 				private userService: UserService,
@@ -73,23 +77,44 @@ export class AuthService {
 		return user;
 	}
 
-	async validateOAuthLogin(req: any) {
-		let user = await this.userService.getByEmail(req.user.email);
+	async validateOAuthLogin(idToken: string) {
+		const ticket = await this.oauthClient.verifyIdToken({
+			idToken,
+			audience: process.env.GOOGLE_CLIENT_ID
+		});
+
+		const payload = ticket.getPayload();
+		if (!payload || !payload.email) {
+			throw new UnauthorizedException('Invalid token');
+		}
+
+		const { email, given_name, family_name } = payload;
+		let user = await this.userService.getByEmail(email);
 
 		if (!user) {
-			user = await this.prisma.user.create({
-				data: {
-					email: req.user.email,
-					firstName: req.user.firstName,
-					lastName: req.user.lastName,
-					oauthProvider:'google',
-					roles: ['CUSTOMER'],
-				}
+			user = await this.userService.createWithOAuth({
+				email,
+				firstName: given_name || 'Google',
+				lastName: family_name || 'User',
+				oauthProvider: 'GOOGLE',
+				password: null,
+				roles: ['CUSTOMER'],
 			});
 		}
-		const tokens = this.issueTokens(user.id);
-		return { user: user, ...tokens };
-	}
+			const accessToken = this.jwt.sign({ id: user.id });
+
+			return {
+				accessToken,
+				user: {
+					id: user.id,
+					email: user.email,
+					firstName: user.firstName,
+					lastName: user.lastName
+				}
+			};
+
+		}
+
 
 	addRefreshTokenToResponse(res: Response, refreshToken: string) {
 		const expiresIn = new Date();
@@ -112,4 +137,5 @@ export class AuthService {
 			sameSite: 'none'
 		});
 	}
+
 }

@@ -20,6 +20,8 @@ function App() {
 				id: data.id,
 				email: data.email,
 				token: token,
+				firstName: data.firstName,
+				lastName: data.lastName
 			}))
 		} else {
 			dispatch(logout())

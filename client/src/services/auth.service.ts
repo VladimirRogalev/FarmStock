@@ -13,5 +13,11 @@ export const AuthService = {
 	async getMe(): Promise<IResponseUser | undefined> {
 		const { data } = await instance.get<IResponseUser>('/users/profile');
 		return data;
+	},
+	async googleLogin(token: string): Promise<IResponseUserData | undefined> {
+		const { data } = await instance.post<IResponseUserData>('/auth/google', {
+			token
+		})
+		return data
 	}
 };
