@@ -3,7 +3,12 @@ import { getTokenFromLocalStorage } from '@/helpers/localstorage.helper.ts';
 
 export const instance = axios.create({
 	baseURL: import.meta.env.VITE_SERVER_URL,
-	headers: {
-		Authorization: `Bearer ` + getTokenFromLocalStorage() || ''
-	},
+	withCredentials: true,
+});
+instance.interceptors.request.use(config => {
+	const token = getTokenFromLocalStorage();
+	if (token) {
+		config.headers.Authorization = `Bearer ${token}`;
+	}
+	return config;
 });
