@@ -8,11 +8,11 @@ async function bootstrap() {
 
     app.use(cookieParser());
     app.enableCors({
-        origin: [process.env.CLIENT_URL],
+        origin: "*",
         credentials: true,
         exposeHeaders: 'set-cookie'
     });
-    await app.listen(process.env.PORT ?? 5000);
+    await app.listen(process.env.PORT ?? 5000, '0.0.0.0');
 }
 
 bootstrap();
