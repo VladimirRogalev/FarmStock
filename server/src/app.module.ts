@@ -10,7 +10,10 @@ import { FileModule } from './file/file.module';
 
 @Module({
     imports: [
-        ConfigModule.forRoot(),
+        ConfigModule.forRoot({
+            isGlobal: true,
+            envFilePath: '.env',
+        }),
         AuthModule,
         UserModule,
         OrderModule,
