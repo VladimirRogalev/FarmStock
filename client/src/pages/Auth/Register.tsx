@@ -21,7 +21,7 @@ const Register: FC = () => {
 			const { firstName, lastName, email, phoneNumber, password } = data;
 			const res = await AuthService.register({ firstName, lastName, email, phoneNumber, password });
 			if(res) {
-				localStorage.setItem('token', res.token)
+				localStorage.setItem('token', res.accessToken)
 				toast.success(`Welcome, ${res.user.firstName} ${res.user.lastName} !`)
 				reset();
 			}
