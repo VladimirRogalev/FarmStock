@@ -45,6 +45,15 @@ export const routes = createBrowserRouter([
 					</AuthRedirect>
 
 			},
+			// Profile
+			{
+				path: 'users/profile', // <--- Изменить здесь
+				element: (
+					<ProtectedRoutes>
+						<UserProfile />
+					</ProtectedRoutes>
+				)
+			},
 			// Farms
 			{
 				path: 'farms',

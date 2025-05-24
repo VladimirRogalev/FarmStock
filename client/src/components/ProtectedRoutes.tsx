@@ -8,23 +8,29 @@ interface Props {
 }
 
 export const ProtectedRoutes: FC<Props> = ({ children }) => {
-	const isAuth = useAuth();
+	const { isAuth: isAuthenticated, user } = useAuth();
 	const navigate = useNavigate();
 
 
 	useEffect(() => {
-		if (!isAuth) {
+		if (user === undefined) {
+			return;
+		}
+		if (!isAuthenticated) {
 			navigate('/auth/login', { replace: true })
 
 		}
-	}, [isAuth, navigate]);
-	if (!isAuth)  {
+	}, [isAuthenticated,user, navigate]);
+	if (!isAuthenticated && !user)  {
 		return (
 			<div className="flex flex-col items-center justify-center gap-10 mt-20">
 				<h1 className="text-2xl text-green-200">Redirect to login page.</h1>
 				<img className="w-1/3"  src={protected_icon} alt="img" />
 			</div>
 		)
+	}
+	if (isAuthenticated && !user) {
+		return <p>Loading user data...</p>;
 	}
 	return <>{children}</>;
 };
