@@ -28,11 +28,7 @@ const Login: FC = () => {
 
 			if (res?.accessToken) {
 				localStorage.setItem('token', res.accessToken)
-				dispatch(login({
-					id: res.user.id,
-					email: res.user.email,
-					token: res.accessToken,
-				}))
+				dispatch(login(res))
 
 				toast.success(`Welcome , ${res.user.firstName} ${res.user.lastName}!`)
 				reset()
@@ -101,11 +97,7 @@ const Login: FC = () => {
 								if (res?.accessToken) {
 									localStorage.setItem('token', res.accessToken)
 
-									dispatch(login({
-										id: res.user.id,
-										email: res.user.email,
-										token: res.accessToken
-									}))
+									dispatch(login(res))
 
 									toast.success(`Welcome, ${res.user.firstName } ${res.user.lastName }!`)
 									navigate('/')
