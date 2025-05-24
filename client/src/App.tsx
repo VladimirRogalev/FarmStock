@@ -23,6 +23,7 @@ function App() {
 				email: data.email,
 				firstName: data.firstName,
 				lastName: data.lastName,
+				phoneNumber:data.phoneNumber
 			},
 			accessToken: token,
 		};
