@@ -1,16 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../store';
-import { IUser } from '@/types/types.ts';
+import { IResponseUser, IResponseUserData } from '@/types/types.ts';
 
 // Define a type for the slice state
 interface IUserState {
-	user: IUser | null;
+	user: IResponseUser | null;
+	token: string | null;
 	isAuth: boolean;
 }
 
 // Define the initial state using that type
 const initialState: IUserState = {
-	user: null, isAuth: false
+	user: null,
+	token: null,
+	isAuth: false
 };
 
 export const userSlice = createSlice({
@@ -18,13 +21,15 @@ export const userSlice = createSlice({
 	// `createSlice` will infer the state type from the `initialState` argument
 	initialState,
 	reducers: {
-		login: (state, action: PayloadAction<IUser>) => {
-			state.user = action.payload;
+		login: (state, action: PayloadAction<IResponseUserData>) => {
+			state.user = action.payload.user;
+			state.token = action.payload.accessToken;
 			state.isAuth = true;
 		},
 		logout: (state) => {
 			state.isAuth = false;
 			state.user = null;
+			state.token = null;
 		}
 	}
 });

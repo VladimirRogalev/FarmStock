@@ -6,9 +6,25 @@ const UserDisplayName : FC = () => {
 
 	if (!user) return <>Profile</>;
 
-	if (user.firstName && user.lastName) {
-		return <>{user.firstName} {user.lastName}</>;
+	const firstName = user.firstName?.trim();
+	const lastName = user.lastName?.trim();
+	const nameParts: string[] = [];
+
+	if (firstName) {
+		nameParts.push(firstName);
 	}
+
+	if (lastName) {
+		nameParts.push(lastName);
+	}
+	if (nameParts.length > 0) {
+		return <>{nameParts.join(' ')}</>;
+	}
+
+	if (user.email) {
+		return <>{user.email}</>;
+	}
+
 
 	if (user.email) {
 		return <>{user.email}</>;
