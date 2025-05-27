@@ -35,3 +35,11 @@ export interface IResponseUserData {
 	accessToken: string;
 	user: IResponseUser;
 }
+
+export interface UpdateUserDto {
+   firstName?: string;
+   lastName?: string;
+   phoneNumber?: string;
+   email?: string;
+
+}

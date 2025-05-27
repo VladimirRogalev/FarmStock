@@ -17,13 +17,15 @@ function App() {
 		try {
 	if (token) {
 		const data = await AuthService.getMe();
-		if (data) { const authData: IResponseUserData = {
+		if (data) {
+			const authData: IResponseUserData = {
 			user: {
 				id: data.id,
 				email: data.email,
 				firstName: data.firstName,
 				lastName: data.lastName,
-				phoneNumber:data.phoneNumber
+				phoneNumber:data.phoneNumber,
+				roles: data.roles,
 			},
 			accessToken: token,
 		};

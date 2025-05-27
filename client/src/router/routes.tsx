@@ -47,7 +47,7 @@ export const routes = createBrowserRouter([
 			},
 			// Profile
 			{
-				path: 'users/profile', // <--- Изменить здесь
+				path: 'users/profile',
 				element: (
 					<ProtectedRoutes>
 						<UserProfile />
