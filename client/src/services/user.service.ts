@@ -10,3 +10,7 @@ export const updateUserProfile = async (dto: UpdateUserDto): Promise<IUser> => {
 	const { data } = await instance.put<IUser>('/users/profile', dto);
 	return data;
 };
+
+export const deleteUserAccount = async (): Promise<void> => {
+	await instance.delete('/users/profile');
+};

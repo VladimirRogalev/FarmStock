@@ -37,9 +37,12 @@ export interface IResponseUserData {
 }
 
 export interface UpdateUserDto {
-   firstName?: string;
-   lastName?: string;
-   phoneNumber?: string;
-   email?: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	phoneNumber?: string;
+	currentPassword?: string;
+	newPassword?: string;
+	confirmNewPassword?: string;
 
 }
