@@ -1,25 +1,26 @@
-import { IsEmail, IsOptional, IsPhoneNumber, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, MinLength } from 'class-validator';
 
 export class UpdateUserDto {
-	@IsOptional()
 	@IsString()
-	firstName?:string;
+	@IsNotEmpty()
+	firstName: string;
+
+	@IsString()
+	@IsNotEmpty()
+	lastName: string;
+
+	@IsEmail()
+	email: string;
 
 	@IsOptional()
 	@IsString()
-	lastName?:string;
-
-	@IsOptional()
-	@IsPhoneNumber()
 	phoneNumber?: string;
 
 	@IsOptional()
-	@IsEmail()
-	email?: string;
+	@IsString()
+	currentPassword?: string;
 
 	@IsOptional()
-	@MinLength(6)
-	password?: string;
-
-
+	@IsString()
+	newPassword?: string;
 }

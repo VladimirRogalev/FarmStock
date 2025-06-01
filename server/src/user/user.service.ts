@@ -4,6 +4,7 @@ import { hash, verify } from 'argon2';
 import { RegisterDto } from '../auth/dto/register.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { OAuthRegisterDto } from '../auth/dto/oauthregister.dto';
+import { Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -15,7 +16,8 @@ export class UserService {
 			where: { id },
 			include: {
 				farm: true
-			}});
+			}
+		});
 		return user;
 	}
 
@@ -39,30 +41,45 @@ export class UserService {
 	}
 
 	async update(id: string, dto: UpdateUserDto) {
-		const updateData = { ...dto };
 		const user = await this.getById(id);
 		if (!user) {
-			throw new NotFoundException(`User with email ${dto.email} not found`);
+			throw new NotFoundException(`User with ID ${id} not found`);
 		}
 
+
 		if (dto.email) {
-			const existUser = await this.prisma.user.findUnique({
-				where: { email: dto.email }
-			});
+			const existUser = await this.prisma.user.findUnique({ where: { email: dto.email } });
 			if (existUser && existUser.id !== id) {
-				throw new BadRequestException(`Email ${dto.email} is already use`);
+				throw new BadRequestException(`Email ${dto.email} is already in use`);
 			}
 		}
-		if (dto.password) {
-			const isSamePassword = await verify(user.password!, dto.password);
-			if (isSamePassword) {
+
+
+		const updateData: Partial<User> = {
+			firstName: dto.firstName,
+			lastName: dto.lastName,
+			email: dto.email,
+			phoneNumber: dto.phoneNumber,
+		};
+
+
+		if (dto.currentPassword && dto.newPassword) {
+			const isMatch = await verify(user.password || '', dto.currentPassword);
+			if (!isMatch) {
+				throw new BadRequestException('Current password is incorrect');
+			}
+
+			if (dto.currentPassword === dto.newPassword) {
 				throw new BadRequestException('New password must be different from the current one');
 			}
 
-			updateData.password = await hash(dto.password);
+
+			updateData.password = await hash(dto.newPassword, );
 		}
+
 		return this.prisma.user.update({
-			where: { id }, data: updateData
+			where: { id },
+			data: updateData,
 		});
 	}
 
@@ -72,6 +89,7 @@ export class UserService {
 		});
 		return { message: 'User deleted', deletedUser };
 	}
+
 	async createWithOAuth(dto: OAuthRegisterDto) {
 		return this.prisma.user.create({
 			data: {
@@ -81,8 +99,8 @@ export class UserService {
 				password: null,
 				oauthProvider: dto.oauthProvider,
 				roles: ['CUSTOMER']
-			},
-		})
+			}
+		});
 	}
 
 	async becomeFarmer(userId: string) {

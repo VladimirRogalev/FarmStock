@@ -31,7 +31,7 @@ export const userSlice = createSlice({
 			state.user = null;
 			state.token = null;
 		},
-		updateUserProfile: (state, action: PayloadAction<IUser>) => {
+		actionUpdateUserProfile: (state, action: PayloadAction<IUser>) => {
 			if (state.user) {
 				state.user = {
 					...state.user,
@@ -42,7 +42,7 @@ export const userSlice = createSlice({
 	}
 });
 
-export const { login, logout, updateUserProfile } = userSlice.actions;
+export const { login, logout, actionUpdateUserProfile } = userSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCount = (state: RootState) => state.user;

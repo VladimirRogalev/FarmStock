@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthService } from '@/services/auth.service.ts';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
-import { LoginFormData, loginSchema } from '@/schemas/loginFormData.ts';
+import { LoginFormSchema, loginSchema } from '@/schemas/loginFormSchema.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAppDispatch } from '@/store/hooks.ts';
 import { login } from '@/store/user/userSlice.ts';
@@ -18,11 +18,11 @@ const Login: FC = () => {
 		handleSubmit,
 		formState: { errors },
 		reset
-	} = useForm<LoginFormData>({
+	} = useForm<LoginFormSchema>({
 		resolver: zodResolver(loginSchema)
 	})
 
-	const onSubmit = async (data: LoginFormData) => {
+	const onSubmit = async (data: LoginFormSchema) => {
 		try {
 			const res = await AuthService.login(data)
 

@@ -35,3 +35,14 @@ export interface IResponseUserData {
 	accessToken: string;
 	user: IResponseUser;
 }
+
+export interface UpdateUserDto {
+	firstName: string;
+	lastName: string;
+	email: string;
+	phoneNumber?: string;
+	currentPassword?: string;
+	newPassword?: string;
+	confirmNewPassword?: string;
+
+}

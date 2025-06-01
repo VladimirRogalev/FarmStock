@@ -1,22 +1,23 @@
 import { FC } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthService } from '@/services/auth.service.ts';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
-import { RegisterFormData, registerSchema } from '@/schemas/registerFormData.ts';
+import { RegisterFormSchema, registerSchema } from '@/schemas/registerFormSchema.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 const Register: FC = () => {
+	const navigate = useNavigate();
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 		reset
-	} = useForm<RegisterFormData>({
+	} = useForm<RegisterFormSchema>({
 		resolver: zodResolver(registerSchema)
 	});
 
-	const onSubmit = async (data: RegisterFormData) => {
+	const onSubmit = async (data: RegisterFormSchema) => {
 		try {
 			const { firstName, lastName, email, phoneNumber, password } = data;
 			const res = await AuthService.register({ firstName, lastName, email, phoneNumber, password });
@@ -24,6 +25,7 @@ const Register: FC = () => {
 				localStorage.setItem('token', res.accessToken)
 				toast.success(`Welcome, ${res.user.firstName} ${res.user.lastName} !`)
 				reset();
+				navigate('/auth/login');
 			}
 
 		} catch (error: any) {
