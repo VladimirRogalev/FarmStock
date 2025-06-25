@@ -28,9 +28,14 @@ const Register: FC = () => {
 				navigate('/auth/login');
 			}
 
-		} catch (error: any) {
-			const errorMessage = error.response?.data.message;
-			toast.error(errorMessage.toString());
+		} catch (error: unknown) {
+			let errorMessage = 'Registration failed';
+			if (error && typeof error === 'object' && 'response' in error && error.response && typeof error.response === 'object' && 'data' in error.response && error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data) {
+				errorMessage = String(error.response.data.message);
+			} else if (error instanceof Error) {
+				errorMessage = error.message;
+			}
+			toast.error(errorMessage);
 		}
 	};
 

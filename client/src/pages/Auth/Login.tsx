@@ -34,9 +34,14 @@ const Login: FC = () => {
 				reset()
 				navigate('/')
 			}
-		} catch (err: any) {
-			const msg = err.response?.data?.message || 'Login failed'
-			toast.error(msg.toString())
+		} catch (err: unknown) {
+			let errorMessage = 'Login failed';
+			if (err && typeof err === 'object' && 'response' in err && err.response && typeof err.response === 'object' && 'data' in err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data) {
+				errorMessage = String(err.response.data.message);
+			} else if (err instanceof Error) {
+				errorMessage = err.message;
+			}
+			toast.error(errorMessage);
 		}
 	}
 
@@ -103,8 +108,14 @@ const Login: FC = () => {
 									navigate('/')
 								}
 
-							} catch (err: any) {
-								toast.error('Google login failed')
+							} catch (err: unknown) {
+								let errorMessage = 'Google login failed';
+								if (err && typeof err === 'object' && 'response' in err && err.response && typeof err.response === 'object' && 'data' in err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data) {
+									errorMessage = String(err.response.data.message);
+								} else if (err instanceof Error) {
+									errorMessage = err.message;
+								}
+								toast.error(errorMessage);
 							}
 						}}
 						onError={() => {
@@ -116,7 +127,7 @@ const Login: FC = () => {
 
 			<div className="mt-5">
 				<Link to="/auth/register" className="text-green-200 underline hover:text-white">
-					Don’t have an account?
+					Don't have an account?
 				</Link>
 			</div>
 		</div>
