@@ -3,8 +3,7 @@ import { useAppDispatch } from '@/store/hooks.ts';
 import { useAuth } from '@/hooks/useAuth';
 import { becomeFarmer, deleteUserAccount, updateUserProfile } from '@/services/user.service.ts';
 import { toast } from 'react-toastify';
-import { Link, useNavigate } from 'react-router-dom';
-import { CheckCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
+import {  useNavigate } from 'react-router-dom';
 import { IUser, UpdateUserDto } from '@/types/types.ts';
 import { actionUpdateUserProfile, logout } from '@/store/user/userSlice.ts';
 import { updateFormSchema, UpdateFormSchemaData } from '@/schemas/updateFormSchema.ts';
@@ -194,7 +193,7 @@ const UserProfile: FC = () => {
 					onEdit={() => setIsEditing(true)}
 					onDelete={() => setIsDeleting(true)}
 					onBecomeFarmer={handleBecomeFarmer}
-					isFarmer={isFarmer}
+					isFarmer={!!isFarmer}
 				/>
 
 				<DeleteModal
