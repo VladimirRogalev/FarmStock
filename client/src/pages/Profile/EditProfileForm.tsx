@@ -1,4 +1,4 @@
-import React, { FC, FormEvent, ChangeEvent } from 'react';
+import { FC, FormEvent, ChangeEvent } from 'react';
 import { UpdateUserDto } from '@/types/types.ts';
 import { UpdateFormSchemaData } from '@/schemas/updateFormSchema.ts';
 
@@ -15,7 +15,7 @@ interface EditProfileFormProps {
 }
 
 export const EditProfileForm: FC<EditProfileFormProps> = ({
-  user,
+  // user,
   onSave,
   onCancel,
   formData,
