@@ -46,3 +46,17 @@ export interface UpdateUserDto {
 	confirmNewPassword?: string;
 
 }
+
+export interface IFarm {
+	id?: string;
+	title: string;
+	description?: string;
+	address?: string;
+	latitude?: number;
+	longitude?: number;
+	tags?: string;
+	coverImage?: string;
+	contactEmail?: string;
+	contactPhone?: string;
+	website?: string;
+}

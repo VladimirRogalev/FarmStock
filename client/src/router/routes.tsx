@@ -17,6 +17,7 @@ import SurpriseBagsDetail from '@/pages/SurpriseBags/SurpriseBagsDetail';
 import SurpriseBagsList from '@/pages/SurpriseBags/SurpriseBagsList.tsx';
 import CreateBag from '@/pages/Farmer/CreateBag.tsx';
 import { AuthRedirect } from '@/components/AuthRedirect.tsx';
+import FarmerOrders from '@/pages/Farmer/FarmerOrders.tsx';
 
 export const routes = createBrowserRouter([
 	{
@@ -134,6 +135,14 @@ export const routes = createBrowserRouter([
 				element: (
 					<ProtectedRoutes>
 						<ManageBags />
+					</ProtectedRoutes>
+				)
+			},
+			{
+				path: 'farmer/orders',
+				element: (
+					<ProtectedRoutes>
+						<FarmerOrders />
 					</ProtectedRoutes>
 				)
 			},

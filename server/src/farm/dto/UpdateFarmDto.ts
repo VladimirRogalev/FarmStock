@@ -1,23 +1,25 @@
-import { ArrayMinSize, IsArray, IsEmail, IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsArray, IsEmail, IsOptional, IsString, IsUrl, ValidateIf, IsNumber } from 'class-validator';
 
 export class UpdateFarmDto {
-	@IsOptional()
 	@IsString()
-	title: string;
+	@IsOptional()
+	title?: string;
 
 	@IsString()
 	@IsOptional()
 	description?: string;
 
-	@IsOptional()
 	@IsString()
-	address: string;
+	@IsOptional()
+	address?: string;
 
 	@IsOptional()
-	@IsArray()
-	@ArrayMinSize(2)
-	@IsNumber({}, { each: true })
-	coordinates: number[];
+	@IsNumber()
+	latitude?: number;
+
+	@IsOptional()
+	@IsNumber()
+	longitude?: number;
 
 	@IsOptional()
 	@IsString({ each: true })
@@ -27,6 +29,7 @@ export class UpdateFarmDto {
 	@IsString()
 	coverImage?: string;
 
+	@ValidateIf(o => o.contactEmail !== '')
 	@IsOptional()
 	@IsEmail()
 	contactEmail?: string;
@@ -35,6 +38,7 @@ export class UpdateFarmDto {
 	@IsString()
 	contactPhone?: string;
 
+	@ValidateIf(o => o.website !== '')
 	@IsOptional()
 	@IsUrl()
 	website?: string;

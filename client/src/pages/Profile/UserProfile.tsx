@@ -196,6 +196,15 @@ const UserProfile: FC = () => {
 					isFarmer={!!isFarmer}
 				/>
 
+				{isFarmer && (
+					<button
+						className="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 font-semibold"
+						onClick={() => navigate('/farmer/dashboard')}
+					>
+						Go to Farmer Dashboard
+					</button>
+				)}
+
 				<DeleteModal
 					isOpen={isDeleting}
 					onClose={() => setIsDeleting(false)}

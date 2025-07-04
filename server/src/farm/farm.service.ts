@@ -8,6 +8,13 @@ export class FarmService {
 	constructor(private prisma: PrismaService) {
 	}
 
+	async getByOwner(userId: string) {
+		const farm = await this.prisma.farm.findFirst({
+			where: { ownerId: userId }
+		});
+		if (!farm) throw new NotFoundException('Farm not found');
+		return farm;
+	}
 	async getById(farmId: string, userId?: string) {
 		const farm = await this.prisma.farm.findUnique({
 			where: {
@@ -16,8 +23,6 @@ export class FarmService {
 		});
 		if (!farm) throw new NotFoundException('Farm not found');
 		if (userId && farm.ownerId !== userId) throw new ForbiddenException('You are not the owner of this farm');
-
-
 		return farm;
 	}
 
@@ -34,8 +39,9 @@ export class FarmService {
 				data: {
 					title: dto.title,
 					description: dto.description,
-					address: dto.address,
-					coordinates: dto.coordinates,
+					address: dto.address ?? '',
+					latitude: dto.latitude,
+					longitude: dto.longitude,
 					tags: dto.tags || [],
 					coverImage: dto.coverImage,
 					contactEmail: dto.contactEmail,
@@ -58,7 +64,8 @@ export class FarmService {
 				title: dto.title,
 				description: dto.description,
 				address: dto.address,
-				coordinates: dto.coordinates,
+				latitude: dto.latitude,
+				longitude: dto.longitude,
 				tags: dto.tags,
 				coverImage: dto.coverImage,
 				contactEmail: dto.contactEmail,
@@ -70,10 +77,8 @@ export class FarmService {
 
 	async delete(farmId: string, userId: string) {
 		await this.getById(farmId, userId);
-
 		return this.prisma.farm.delete({
 			where: { id: farmId }
 		});
 	}
-
 }

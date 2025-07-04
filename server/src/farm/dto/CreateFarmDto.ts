@@ -1,8 +1,7 @@
-import { ArrayMinSize, IsArray, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsArray, IsEmail, IsOptional, IsString, IsUrl, ValidateIf, IsNumber } from 'class-validator';
 
 export class CreateFarmDto {
 	@IsString()
-	@IsNotEmpty()
 	title: string;
 
 	@IsString()
@@ -10,13 +9,16 @@ export class CreateFarmDto {
 	description?: string;
 
 	@IsString()
-	@IsNotEmpty()
-	address: string;
+	@IsOptional()
+	address?: string;
 
-	@IsArray()
-	@ArrayMinSize(2)
-	@IsNumber({}, { each: true })
-	coordinates: number[];
+	@IsOptional()
+	@IsNumber()
+	latitude?: number;
+
+	@IsOptional()
+	@IsNumber()
+	longitude?: number;
 
 	@IsOptional()
 	@IsString({ each: true })
@@ -26,6 +28,7 @@ export class CreateFarmDto {
 	@IsString()
 	coverImage?: string;
 
+	@ValidateIf(o => o.contactEmail !== '')
 	@IsOptional()
 	@IsEmail()
 	contactEmail?: string;
@@ -34,9 +37,8 @@ export class CreateFarmDto {
 	@IsString()
 	contactPhone?: string;
 
+	@ValidateIf(o => o.website !== '')
 	@IsOptional()
 	@IsUrl()
 	website?: string;
-
-
 }

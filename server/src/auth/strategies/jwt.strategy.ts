@@ -4,7 +4,6 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from '../../user/user.service';
 
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
 	constructor(private configService: ConfigService, private customerService: UserService) {
@@ -16,6 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 	}
 
 	async validate({ id }: { id: string }) {
-		return this.customerService.getById(id);
+		const user = await this.customerService.getById(id);
+		return user;
 	}
 }
