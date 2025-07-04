@@ -15,7 +15,7 @@ interface EditProfileFormProps {
 }
 
 export const EditProfileForm: FC<EditProfileFormProps> = ({
-  // user,
+
   onSave,
   onCancel,
   formData,

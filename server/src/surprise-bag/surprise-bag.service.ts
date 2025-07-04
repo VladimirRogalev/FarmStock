@@ -119,7 +119,6 @@ export class SurpriseBagService {
 				quantity: dto.quantity,
 				expiresAt: new Date(dto.expiresAt),
 				address: user.farm.address,
-				coordinates: user.farm.coordinates,
 				farmId: user.farm.id
 			}
 		});

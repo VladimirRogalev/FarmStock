@@ -52,7 +52,8 @@ model Farm {
   title            String
   description      String?
   address          String
-  coordinates      Decimal[]
+  latitude         Decimal?
+  longitude        Decimal?
   rating           Decimal   @default(0.0)
   howManyRatings   Int       @default(0) @map("how_many_ratings")
   successfulOrders Int       @default(0) @map("successful_orders")
