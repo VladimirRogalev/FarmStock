@@ -185,7 +185,15 @@ const UserProfile: FC = () => {
 						inputClass={inputClass}
 					/>
 				) : (
-					<ProfileDetails user={user} />
+					<>
+						<ProfileDetails user={user} />
+						{user.country && <div><b>Country:</b> {user.country}</div>}
+						{user.city && <div><b>City:</b> {user.city}</div>}
+						{user.street && <div><b>Street:</b> {user.street}</div>}
+						{user.apartment && <div><b>Apartment:</b> {user.apartment}</div>}
+						{user.latitude && <div><b>Latitude:</b> {user.latitude}</div>}
+						{user.longitude && <div><b>Longitude:</b> {user.longitude}</div>}
+					</>
 				)}
 
 				<ProfileActions

@@ -26,6 +26,13 @@ model User {
   phoneNumber   String?
   oauthProvider String?
 
+  country         String?
+  city            String?
+  street          String?
+  apartment       String?
+  latitude        Decimal?
+  longitude       Decimal?
+
   roles EnumUserRoles[]
 
   farm Farm?
@@ -51,7 +58,10 @@ model Farm {
 
   title            String
   description      String?
-  address          String
+  country          String?
+  city             String?
+  street           String?
+  apartment        String?
   latitude         Decimal?
   longitude        Decimal?
   rating           Decimal   @default(0.0)
@@ -112,7 +122,12 @@ model SurpriseBag {
   expiresAt   DateTime?
   images      String[]                @default([])
 
-  address     String
+  country          String?
+  city             String?
+  street           String?
+  apartment        String?
+  latitude         Decimal?
+  longitude        Decimal?
   coordinates Decimal[]
 
   farmId String

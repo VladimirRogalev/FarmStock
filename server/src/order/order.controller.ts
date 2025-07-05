@@ -18,10 +18,7 @@ export class OrderController {
 		return this.orderService.createPayment(dto, userId);
 	}
 
-	// @Post('paypal/capture')
-	// async capturePayment(@Query('token') token: string) {
-	// 	return this.orderService.capturePayment(token);
-	// }
+
 
 	@Get('thanks')
 	async handleThanks(@Query('token') token: string, @Res() res: Response) {

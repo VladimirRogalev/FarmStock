@@ -63,43 +63,7 @@ export class SurpriseBagService {
 		return surpriseBag;
 	}
 
-	// async getMostPopular(limit = 5) {
-	// 	const mostPopularSB = await this.prisma.orderItem.groupBy({
-	// 		by: ['surpriseBagId'],
-	// 		_count: {
-	// 			surpriseBagId: true
-	// 		},
-	// 		orderBy: {
-	// 			_count: {
-	// 				surpriseBagId: 'desc'
-	// 			}
-	// 		},
-	// 		take: limit
-	// 	});
-	// 	const surpriseBagIds = mostPopularSB.map(item => item.surpriseBagId);
-	//
-	// 	const surpriseBags = await this.prisma.surpriseBag.findMany({
-	// 		where: {
-	// 			id: { in: surpriseBagIds }
-	// 		}
-	// 	});
-	// 	const surpriseBagsMap = new Map(surpriseBags.map(bag => [bag.id, bag]));
-	// 	const sortedBags = surpriseBagIds.map(id => surpriseBagsMap.get(id));
-	//
-	// 	return sortedBags;
-	// }
 
-	// async getSimilar(id:string) {
-	// 	const currentSurpriseBag = await this.getById(id)
-	// 	if (!currentSurpriseBag) {
-	// 		throw new NotFoundException('Current surprise bag not found');
-	// 	}
-	// 	const surpriseBags = await this.prisma.surpriseBag.findMany({
-	// 		where:{
-	//
-	// 		}
-	// 	})
-	// }
 
 	async create(userId: string, dto: SurpriseBagDto) {
 		const user = await this.prisma.user.findUnique({
@@ -118,7 +82,6 @@ export class SurpriseBagService {
 				category: dto.category,
 				quantity: dto.quantity,
 				expiresAt: new Date(dto.expiresAt),
-				address: user.farm.address,
 				farmId: user.farm.id
 			}
 		});

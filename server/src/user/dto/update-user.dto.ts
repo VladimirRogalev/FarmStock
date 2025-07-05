@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, MinLength, IsNumber } from 'class-validator';
 
 export class UpdateUserDto {
 	@IsString()
@@ -23,4 +23,28 @@ export class UpdateUserDto {
 	@IsOptional()
 	@IsString()
 	newPassword?: string;
+
+	@IsOptional()
+	@IsString()
+	country?: string;
+
+	@IsOptional()
+	@IsString()
+	city?: string;
+
+	@IsOptional()
+	@IsString()
+	street?: string;
+
+	@IsOptional()
+	@IsString()
+	apartment?: string;
+
+	@IsOptional()
+	@IsNumber()
+	latitude?: number;
+
+	@IsOptional()
+	@IsNumber()
+	longitude?: number;
 }

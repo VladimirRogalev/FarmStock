@@ -4,7 +4,12 @@ export interface IUser {
 	lastName?: string;
 	email: string;
 	token: string;
-
+	country?: string;
+	city?: string;
+	street?: string;
+	apartment?: string;
+	latitude?: number;
+	longitude?: number;
 }
 export interface ILoginDto {
 	email: string
@@ -28,7 +33,12 @@ export interface IResponseUser {
 	createdAt?: string;
 	updatedAt?: string;
 	oauthProvider?: string | null;
-
+	country?: string;
+	city?: string;
+	street?: string;
+	apartment?: string;
+	latitude?: number;
+	longitude?: number;
 }
 
 export interface IResponseUserData {
@@ -44,14 +54,22 @@ export interface UpdateUserDto {
 	currentPassword?: string;
 	newPassword?: string;
 	confirmNewPassword?: string;
-
+	country?: string;
+	city?: string;
+	street?: string;
+	apartment?: string;
+	latitude?: number;
+	longitude?: number;
 }
 
 export interface IFarm {
 	id?: string;
 	title: string;
 	description?: string;
-	address?: string;
+	country?: string;
+	city?: string;
+	street?: string;
+	apartment?: string;
 	latitude?: number;
 	longitude?: number;
 	tags?: string;

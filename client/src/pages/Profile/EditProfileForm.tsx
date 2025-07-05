@@ -1,4 +1,4 @@
-import { FC, FormEvent, ChangeEvent } from 'react';
+import { FC, FormEvent, ChangeEvent, useEffect } from 'react';
 import { UpdateUserDto } from '@/types/types.ts';
 import { UpdateFormSchemaData } from '@/schemas/updateFormSchema.ts';
 
@@ -15,7 +15,6 @@ interface EditProfileFormProps {
 }
 
 export const EditProfileForm: FC<EditProfileFormProps> = ({
-
   onSave,
   onCancel,
   formData,
@@ -23,6 +22,28 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({
   onInputChange,
   inputClass,
 }) => {
+  useEffect(() => {
+    const fetchCoords = async () => {
+      const { country, city, street } = formData;
+      if (country && city && street) {
+        const query = encodeURIComponent(`${country}, ${city}, ${street}`);
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data[0]) {
+          onInputChange({
+            target: { name: 'latitude', value: data[0].lat }
+          } as any);
+          onInputChange({
+            target: { name: 'longitude', value: data[0].lon }
+          } as any);
+        }
+      }
+    };
+    fetchCoords();
+    // eslint-disable-next-line
+  }, [formData.country, formData.city, formData.street]);
+
   return (
     <form onSubmit={onSave} className="space-y-4">
       <div>
@@ -72,6 +93,50 @@ export const EditProfileForm: FC<EditProfileFormProps> = ({
           className={inputClass('phoneNumber')}
         />
         {formErrors?.phoneNumber && <p className="mt-1 text-xs text-red-600">{formErrors.phoneNumber[0]}</p>}
+      </div>
+      <div>
+        <label htmlFor="country" className="block text-sm font-medium">Country</label>
+        <input
+          type="text"
+          id="country"
+          name="country"
+          value={formData.country || ''}
+          onChange={onInputChange}
+          className={inputClass('country')}
+        />
+      </div>
+      <div>
+        <label htmlFor="city" className="block text-sm font-medium">City</label>
+        <input
+          type="text"
+          id="city"
+          name="city"
+          value={formData.city || ''}
+          onChange={onInputChange}
+          className={inputClass('city')}
+        />
+      </div>
+      <div>
+        <label htmlFor="street" className="block text-sm font-medium">Street and house</label>
+        <input
+          type="text"
+          id="street"
+          name="street"
+          value={formData.street || ''}
+          onChange={onInputChange}
+          className={inputClass('street')}
+        />
+      </div>
+      <div>
+        <label htmlFor="apartment" className="block text-sm font-medium">Apartment (optional)</label>
+        <input
+          type="text"
+          id="apartment"
+          name="apartment"
+          value={formData.apartment || ''}
+          onChange={onInputChange}
+          className={inputClass('apartment')}
+        />
       </div>
       <div>
         <label htmlFor="currentPassword" className="block text-sm font-medium">Current Password</label>

@@ -55,12 +55,18 @@ export class UserService {
 		}
 
 
-		const updateData: Partial<User> = {
-			firstName: dto.firstName,
-			lastName: dto.lastName,
+		const updateData: any = {
 			email: dto.email,
 			phoneNumber: dto.phoneNumber,
+			firstName: dto.firstName,
+			lastName: dto.lastName,
 		};
+		if (dto.country) updateData.country = dto.country;
+		if (dto.city) updateData.city = dto.city;
+		if (dto.street) updateData.street = dto.street;
+		if (dto.apartment) updateData.apartment = dto.apartment;
+		if (dto.latitude) updateData.latitude = dto.latitude;
+		if (dto.longitude) updateData.longitude = dto.longitude;
 
 
 		if (dto.currentPassword && dto.newPassword) {
