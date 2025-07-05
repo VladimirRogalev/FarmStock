@@ -11,9 +11,12 @@ const initialFarmState: IFarm = {
 	id: '',
 	title: '',
 	description: '',
-	address: '',
-	latitude: 0,
-	longitude: 0,
+	country: '',
+	city: '',
+	street: '',
+	apartment: '',
+	latitude: undefined,
+	longitude: undefined,
 	tags: '',
 	coverImage: '',
 	contactEmail: '',
@@ -157,9 +160,10 @@ const FarmerDashboard = () => {
 						<div className="space-y-2">
 							<div><b>Title:</b> {farm.title}</div>
 							<div><b>Description:</b> {farm.description}</div>
-							<div><b>Address:</b> {farm.address}</div>
-							<div><b>Latitude:</b> {farm.latitude}</div>
-							<div><b>Longitude:</b> {farm.longitude}</div>
+							<div><b>Country:</b> {farm.country}</div>
+							<div><b>City:</b> {farm.city}</div>
+							<div><b>Street:</b> {farm.street}</div>
+							{farm.apartment && <div><b>Apartment:</b> {farm.apartment}</div>}
 							<div><b>Tags:</b> {farm.tags}</div>
 							<div><b>Cover Image:</b> {farm.coverImage}</div>
 							<div><b>Contact Email:</b> {farm.contactEmail}</div>

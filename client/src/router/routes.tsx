@@ -25,7 +25,7 @@ export const routes = createBrowserRouter([
 		element: <Layout />,
 		errorElement: <ErrorPage />,
 		children: [
-			//Public Routes
+		
 			{
 				index: true,
 				element: <Home />
@@ -46,7 +46,6 @@ export const routes = createBrowserRouter([
 					</AuthRedirect>
 
 			},
-			// Profile
 			{
 				path: 'users/profile',
 				element: (
@@ -55,7 +54,7 @@ export const routes = createBrowserRouter([
 					</ProtectedRoutes>
 				)
 			},
-			// Farms
+
 			{
 				path: 'farms',
 				element: (
@@ -71,7 +70,7 @@ export const routes = createBrowserRouter([
 				)
 			},
 
-			// Surprise Bags
+
 			{
 				path: 'bags',
 				element: (
@@ -87,7 +86,7 @@ export const routes = createBrowserRouter([
 				)
 			},
 
-			// Cart & Checkout
+
 			{
 				path: 'cart',
 				element: (
@@ -113,7 +112,7 @@ export const routes = createBrowserRouter([
 				)
 			},
 
-			// Farmer dashboard
+
 			{
 				path: 'farmer/dashboard',
 				element: (
@@ -147,7 +146,6 @@ export const routes = createBrowserRouter([
 				)
 			},
 
-			// Profile
 			{
 				path: 'profile',
 				element: (

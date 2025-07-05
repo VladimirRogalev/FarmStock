@@ -2,13 +2,19 @@ import { z } from 'zod';
 
 export const updateFormSchema = z
 	.object({
-		firstName: z.string().min(1, 'First name is required'),
-		lastName: z.string().min(1, 'Last name is required'),
+		firstName: z.string().min(2, 'First name is required'),
+		lastName: z.string().min(2, 'Last name is required'),
 		email: z.string().email('Invalid email address'),
 		phoneNumber: z.string().min(6, 'Phone number is too short').optional(),
 		currentPassword: z.string().optional(),
 		newPassword: z.string().optional(),
 		confirmNewPassword: z.string().optional(),
+		country: z.string().min(2, 'Country is required').optional(),
+		city: z.string().min(2, 'City is required').optional(),
+		street: z.string().min(2, 'Street is required').optional(),
+		apartment: z.string().optional(),
+		latitude: z.number().optional(),
+		longitude: z.number().optional(),
 	})
 	.superRefine((data, ctx) => {
 		const intendsToChangePassword =

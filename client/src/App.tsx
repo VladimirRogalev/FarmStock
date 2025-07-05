@@ -12,41 +12,34 @@ function App() {
 	const dispatch = useAppDispatch();
 	const [isLoading, setIsLoading] = useState(true);
 
-	const checkAuth = async () => {
+	useEffect(() => {
 		const token = getTokenFromLocalStorage();
-		try {
-	if (token) {
-		const data = await AuthService.getMe();
-		if (data) {
-			const authData: IResponseUserData = {
-			user: {
-				id: data.id,
-				email: data.email,
-				firstName: data.firstName,
-				lastName: data.lastName,
-				phoneNumber:data.phoneNumber,
-				roles: data.roles,
-			},
-			accessToken: token,
-		};
-			dispatch(login(authData));
+		if (token) {
+			AuthService.getMe()
+				.then(user => {
+					if (user) {
+						const authData: IResponseUserData = {
+							user: {
+								id: user.id,
+								email: user.email,
+								firstName: user.firstName,
+								lastName: user.lastName,
+								phoneNumber: user.phoneNumber,
+								roles: user.roles,
+							},
+							accessToken: token,
+						};
+						dispatch(login(authData));
+					} else {
+						dispatch(logout());
+					}
+				})
+				.catch(() => dispatch(logout()))
+				.finally(() => setIsLoading(false));
 		} else {
-			dispatch(logout()); // Если данных нет, выходим из системы
-		}
-	}
-
-		} catch (error) {
-			console.log("Authentication check error:",error);
-			dispatch(logout());
-		}
-		finally {
 			setIsLoading(false);
 		}
-	}
-
-	useEffect(() => {
-		checkAuth();
-	}, );
+	}, [dispatch]);
 
 	if (isLoading) {
 		return (

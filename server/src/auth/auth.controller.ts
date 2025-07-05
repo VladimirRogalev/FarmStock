@@ -67,16 +67,5 @@ export class AuthController {
 		return this.authService.validateOAuthLogin(token);
 	}
 
-	// @Get('google')
-	// @UseGuards(AuthGuard('google'))
-	// async googleAuth(@Req() req) {
-	// }
-	//
-	// @Get('google/callback')
-	// @UseGuards(AuthGuard('google'))
-	// async googleAuthCallback(@Req() req, @Res({ passthrough: true }) res: Response) {
-	// 	const { refreshToken, ...response } = await this.authService.validateOAuthLogin(req);
-	// 	this.authService.addRefreshTokenToResponse(res, refreshToken);
-	// 	return res.redirect(`${process.env['CLIENT_URL']}/dashboard?accessToken=${response.accessToken}`);
-	// }
+
 }

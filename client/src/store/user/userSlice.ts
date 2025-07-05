@@ -2,14 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../store';
 import { IResponseUser, IResponseUserData, IUser } from '@/types/types.ts';
 
-// Define a type for the slice state
 interface IUserState {
 	user: IResponseUser | null;
 	token: string | null;
 	isAuth: boolean;
 }
 
-// Define the initial state using that type
 const initialState: IUserState = {
 	user: null,
 	token: null,
@@ -18,7 +16,6 @@ const initialState: IUserState = {
 
 export const userSlice = createSlice({
 	name: 'user',
-	// `createSlice` will infer the state type from the `initialState` argument
 	initialState,
 	reducers: {
 		login: (state, action: PayloadAction<IResponseUserData>) => {
@@ -44,7 +41,7 @@ export const userSlice = createSlice({
 
 export const { login, logout, actionUpdateUserProfile } = userSlice.actions;
 
-// Other code such as selectors can use the imported `RootState` type
+
 export const selectCount = (state: RootState) => state.user;
 
 export default userSlice.reducer;

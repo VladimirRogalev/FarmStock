@@ -35,18 +35,24 @@ export class FarmService {
 		if (!user) throw new BadRequestException('User not found');
 		if (user.farm) throw new BadRequestException('User already has a farm');
 		if (user.roles.includes('FARMER')) {
+			const data: any = {
+				title: dto.title,
+				description: dto.description,
+				tags: dto.tags,
+				coverImage: dto.coverImage,
+				contactEmail: dto.contactEmail,
+				contactPhone: dto.contactPhone,
+				website: dto.website,
+			};
+			if (dto.country) data.country = dto.country;
+			if (dto.city) data.city = dto.city;
+			if (dto.street) data.street = dto.street;
+			if (dto.apartment) data.apartment = dto.apartment;
+			if (dto.latitude) data.latitude = dto.latitude;
+			if (dto.longitude) data.longitude = dto.longitude;
 			return this.prisma.farm.create({
 				data: {
-					title: dto.title,
-					description: dto.description,
-					address: dto.address ?? '',
-					latitude: dto.latitude,
-					longitude: dto.longitude,
-					tags: dto.tags || [],
-					coverImage: dto.coverImage,
-					contactEmail: dto.contactEmail,
-					contactPhone: dto.contactPhone,
-					website: dto.website,
+					...data,
 					ownerId: userId
 				}
 			});
@@ -58,20 +64,24 @@ export class FarmService {
 	async update(farmId: string, userId: string, dto: UpdateFarmDto) {
 		await this.getById(farmId, userId);
 
+		const updateData: any = {};
+		if (dto.title) updateData.title = dto.title;
+		if (dto.description) updateData.description = dto.description;
+		if (dto.tags) updateData.tags = dto.tags;
+		if (dto.coverImage) updateData.coverImage = dto.coverImage;
+		if (dto.contactEmail) updateData.contactEmail = dto.contactEmail;
+		if (dto.contactPhone) updateData.contactPhone = dto.contactPhone;
+		if (dto.website) updateData.website = dto.website;
+		if (dto.country) updateData.country = dto.country;
+		if (dto.city) updateData.city = dto.city;
+		if (dto.street) updateData.street = dto.street;
+		if (dto.apartment) updateData.apartment = dto.apartment;
+		if (dto.latitude) updateData.latitude = dto.latitude;
+		if (dto.longitude) updateData.longitude = dto.longitude;
+
 		return this.prisma.farm.update({
 			where: { id: farmId },
-			data: {
-				title: dto.title,
-				description: dto.description,
-				address: dto.address,
-				latitude: dto.latitude,
-				longitude: dto.longitude,
-				tags: dto.tags,
-				coverImage: dto.coverImage,
-				contactEmail: dto.contactEmail,
-				contactPhone: dto.contactPhone,
-				website: dto.website
-			}
+			data: updateData
 		});
 	}
 

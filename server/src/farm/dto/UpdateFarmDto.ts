@@ -11,7 +11,19 @@ export class UpdateFarmDto {
 
 	@IsString()
 	@IsOptional()
-	address?: string;
+	country?: string;
+
+	@IsString()
+	@IsOptional()
+	city?: string;
+
+	@IsString()
+	@IsOptional()
+	street?: string;
+
+	@IsString()
+	@IsOptional()
+	apartment?: string;
 
 	@IsOptional()
 	@IsNumber()
